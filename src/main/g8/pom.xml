@@ -32,7 +32,7 @@
 
     <!-- tycho test related -->
     <tycho.test.OSspecific></tycho.test.OSspecific>
-    <tycho.test.jvmArgs>-Xmx800m -XX:MaxPermSize=256m -Dsdtcore.headless \${tycho.test.weaving} \${tycho.test.OSspecific}</tycho.test.jvmArgs>
+    <tycho.test.jvmArgs>-Xmx800m -XX:MaxPermSize=256m -Dsdtcore.headless \${tycho.test.OSspecific}</tycho.test.jvmArgs>
 
     <!-- dependencies repos -->
     <eclipse.codename>indigo</eclipse.codename>
