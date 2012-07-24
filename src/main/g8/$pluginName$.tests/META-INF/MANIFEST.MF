@@ -7,9 +7,5 @@ Bundle-Vendor: $providerName$
 Fragment-Host: $pluginName$
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.scala-ide.scala.library,
- org.eclipse.equinox.weaving.aspectj,
- org.junit4;bundle-version="4.5.0",
- org.scala-ide.sdt.core
-Import-Package: scala.tools.eclipse.testsetup,
- org.aspectj.weaver.loadtime.definition
+ org.junit4;bundle-version="4.5.0"
 Bundle-ClassPath: .

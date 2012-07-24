@@ -4,8 +4,11 @@ import scala.tools.eclipse.javaelements.ScalaCompilationUnit
 
 object SomeInterestingCode {
   
-  def numberOfTypes(scalaCompilationUnit: ScalaCompilationUnit): Int = {
-    scalaCompilationUnit.getCompilationUnit.getAllTypes.length
+  def div(a: Int, b: Int): Option[Int] = {                          
+    if (b == 0) {                                                   
+      None
+    } else {
+      Some(a / b)
+    }
   }
-
 }

@@ -24,7 +24,6 @@
     <!-- p2 repositories location -->
     <repo.eclipse.indigo>http://download.eclipse.org/releases/indigo/</repo.eclipse.indigo>
     <repo.eclipse.juno>http://download.eclipse.org/releases/juno/</repo.eclipse.juno>
-    <repo.ajdt.indigo>http://download.eclipse.org/tools/ajdt/37/dev/update</repo.ajdt.indigo>
     <repo.scala-ide.root>http://download.scala-ide.org</repo.scala-ide.root>
 
     <!-- fixed versions -->
@@ -33,14 +32,11 @@
 
     <!-- tycho test related -->
     <tycho.test.OSspecific></tycho.test.OSspecific>
-    <!-- Partial workaround against JDT Weaving deadlocks. See #1000317 and the original ticket on https://issuetracker.springsource.com/browse/STS-1445 -->
-    <tycho.test.weaving>-XX:+UnlockDiagnosticVMOptions -XX:+UnsyncloadClass -Dosgi.classloader.lock=classname</tycho.test.weaving>
     <tycho.test.jvmArgs>-Xmx800m -XX:MaxPermSize=256m -Dsdtcore.headless \${tycho.test.weaving} \${tycho.test.OSspecific}</tycho.test.jvmArgs>
 
     <!-- dependencies repos -->
     <eclipse.codename>indigo</eclipse.codename>
     <repo.eclipse>\${repo.eclipse.indigo}</repo.eclipse>
-    <repo.ajdt>\${repo.ajdt.indigo}</repo.ajdt>
 
     <!-- some default values, can be overwritten by profiles -->
     <scala.version>2.9.3-SNAPSHOT</scala.version>
@@ -53,26 +49,12 @@
 
   <profiles>
     <profile>
-      <!-- this is the default profile, using the stable builds-->
-      <id>scala-ide-2.0-scala-2.9</id>
+      <!-- this is the default profile, using the stable Scala build-->
+      <id>scala-2.9</id>
     </profile>
     <profile>
-      <!-- 2.0.x Scala IDE with Scala 2.9 -->
-      <id>scala-ide-2.0.x-scala-2.9</id>
-      <properties>
-        <repo.scala-ide>\${repo.scala-ide.root}/nightly-update-2-0-x-29x</repo.scala-ide>
-      </properties>
-    </profile>
-    <profile>
-      <!-- nightly Scala IDE with Scala 2.9 -->
-      <id>scala-ide-master-scala-2.9</id>
-      <properties>
-        <repo.scala-ide>\${repo.scala-ide.root}/nightly-update-master-29x</repo.scala-ide>
-      </properties>
-    </profile>
-    <profile>
-      <!-- nightly Scala IDE with Scala trunk -->
-      <id>scala-ide-master-scala-trunk</id>
+      <!-- Scala trunk -->
+      <id>scala-trunk</id>
       <properties>
         <scala.version>2.10.0-SNAPSHOT</scala.version>
         <version.suffix>2_10</version.suffix>
@@ -158,13 +140,6 @@
       <url>\${repo.eclipse}</url>
       <snapshots><enabled>false</enabled></snapshots>
     </repository>
-    <repository>
-      <id>ajdt.\${eclipse.codename}</id>
-      <name>AJDT for Eclipse p2 repository</name>
-      <layout>p2</layout>
-      <url>\${repo.ajdt}</url>
-      <snapshots><enabled>false</enabled></snapshots>
-    </repository>
   </repositories>
 
   <build>
@@ -177,27 +152,6 @@
           <configuration>
             <useUIHarness>false</useUIHarness>
             <useUIThread>false</useUIThread>
-  
-            <!-- Enable JDT weaving -->
-            <systemProperties combine.children="append">
-              <aj.weaving.verbose>true</aj.weaving.verbose>
-              <org.aspectj.weaver.showWeaveInfo>true</org.aspectj.weaver.showWeaveInfo>
-              <org.aspectj.osgi.verbose>true</org.aspectj.osgi.verbose>
-            </systemProperties>
-            <frameworkExtensions>
-              <frameworkExtension>
-                <groupId>p2.osgi.bundle</groupId>
-                <artifactId>org.eclipse.equinox.weaving.hook</artifactId>
-                <version>1.0.200.I20120427-0800</version>
-              </frameworkExtension>
-            </frameworkExtensions>
-            <bundleStartLevel>
-              <bundle>
-                <id>org.eclipse.equinox.weaving.aspectj</id>
-                <level>2</level>
-                <autoStart>true</autoStart>
-              </bundle>
-            </bundleStartLevel>
             <argLine>\${tycho.test.jvmArgs}</argLine>
           </configuration>
         </plugin>
