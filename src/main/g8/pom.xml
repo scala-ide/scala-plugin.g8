@@ -5,13 +5,6 @@
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
-
-  <parent>
-    <groupId>org.scala-ide</groupId>
-    <artifactId>plugin-profiles</artifactId>
-    <version>1.0.0</version>
-  </parent>
-
   <groupId>$provider$</groupId>
   <artifactId>$pluginName$.build</artifactId>
   <version>0.1.0-SNAPSHOT</version>
@@ -26,4 +19,212 @@
     <module>$pluginName$.update-site</module>
   </modules>
 
+  <properties>
+    <encoding>UTF-8</encoding>
+    <!-- Eclipse repository location -->
+    <repo.eclipse>http://download.eclipse.org/releases/kepler/</repo.eclipse>
+
+    <!-- dependencies versions -->
+    <scala.version>2.10.3</scala.version>
+    <junit.version>4.10</junit.version>
+
+    <!-- plugins versions -->
+    <tycho.version>0.18.1</tycho.version>
+    <scala.plugin.version>3.1.5</scala.plugin.version>
+
+    <!-- tycho test related -->
+    <tycho.test.OSspecific></tycho.test.OSspecific>
+    <tycho.test.jvmArgs>-Xmx800m -XX:MaxPermSize=256m \${tycho.test.OSspecific}</tycho.test.jvmArgs>
+   </properties>
+
+  <profiles>
+
+    <profile>
+      <!-- some configuration for tests run by tycho on Mac OS -->
+      <id>macOs</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <tycho.test.OSspecific>-Dosgi.ws=cocoa -XstartOnFirstThread</tycho.test.OSspecific>
+      </properties>
+       <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eclipse.tycho</groupId>
+              <artifactId>tycho-surefire-plugin</artifactId>
+              <configuration>
+                <dependencies>
+                  <dependency>
+                    <artifactId>org.eclipse.jdt.launching.macosx</artifactId>
+                    <type>eclipse-plugin</type>
+                  </dependency>
+                </dependencies>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>\${scala.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-actors</artifactId>
+        <version>\${scala.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-reflect</artifactId>
+        <version>\${scala.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-compiler</artifactId>
+        <version>\${scala.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>sonatype.release</id>
+      <name>Sonatype maven release repository</name>
+      <url>https://oss.sonatype.org/content/repositories/releases/</url>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+    <repository>
+      <id>sonatype.snapshot</id>
+      <name>Sonatype maven snapshot repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <snapshots>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>eclipse</id>
+      <name>Eclipse p2 repository</name>
+      <layout>p2</layout>
+      <url>\${repo.eclipse}</url>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>\${tycho.version}</version>
+          <configuration>
+            <useUIHarness>false</useUIHarness>
+            <useUIThread>false</useUIThread>
+            <argLine>\${tycho.test.jvmArgs}</argLine>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>\${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <!-- configuration to be able to use maven bundle as osgi bundles -->
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>\${tycho.version}</version>
+        <configuration>
+          <resolver>p2</resolver>
+          <pomDependencies>consider</pomDependencies>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>\${tycho.version}</version>
+        <configuration>
+          <excludeResources>
+            <excludeResource>**/*.scala</excludeResource>
+          </excludeResources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- configuration of the scala compiler -->
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>\${scala.plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmArgs>
+            <jvmArg>-Xms512m</jvmArg>
+            <jvmArg>-Xmx1024m</jvmArg>
+          </jvmArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>\${tycho.version}</version>
+        <executions>
+          <execution>
+            <id>attach-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- for setting a better qualifier -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <version>\${tycho.version}</version>
+        <configuration>
+          <format>'v'yyyyMMddHHmm</format>
+          <archiveSite>true</archiveSite>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

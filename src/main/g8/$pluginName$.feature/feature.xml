@@ -226,11 +226,17 @@ All rights reserved.
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.scala-ide.scala.library"/>
    </requires>
 
    <plugin
          id="$pluginName$"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.scala-lang.scala-library"
          download-size="0"
          install-size="0"
          version="0.0.0"
