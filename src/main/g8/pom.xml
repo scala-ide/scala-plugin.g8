@@ -26,7 +26,6 @@
 
     <!-- dependencies versions -->
     <scala.version>2.10.3</scala.version>
-    <junit.version>4.10</junit.version>
 
     <!-- plugins versions -->
     <tycho.version>0.18.1</tycho.version>
